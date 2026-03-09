@@ -2,7 +2,6 @@ name: Build Tweak
 
 on:
   push:
-    branches: [ master ]
   workflow_dispatch:
 
 jobs:
@@ -10,17 +9,25 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
+      - name: Checkout
         uses: actions/checkout@v3
 
       - name: Install dependencies
         run: |
           sudo apt update
-          sudo apt install -y make clang lld git dpkg
+          sudo apt install -y make clang git dpkg lld curl
 
       - name: Install Theos
         run: |
           git clone --recursive https://github.com/theos/theos.git $HOME/theos
+
+      - name: Install iOS SDK
+        run: |
+          git clone https://github.com/theos/sdks.git $HOME/theos/sdks
+
+      - name: Install toolchain
+        run: |
+          git clone https://github.com/theos/iphone-toolchain.git $HOME/theos/toolchain
 
       - name: Build package
         run: |
